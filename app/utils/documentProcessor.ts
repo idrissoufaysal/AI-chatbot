@@ -1,6 +1,6 @@
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { CassandraStore } from "@langchain/community/vectorstores/cassandra";
 import { Client } from "cassandra-driver";
 
@@ -37,9 +37,12 @@ export async function processDocuments(content: any) {
       table: "kof_embeddings",
       keyspace: process.env.ASTRA_KEYSPACE!,
       dimensions: 1536,
-      cassandraClient: client,
+      client: client,
     }
   );
   
   return vectorStore;
 } 
+
+
+

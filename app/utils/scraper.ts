@@ -1,26 +1,19 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
 
 export async function scrapWebsite(url: string) {
-  try {
-    const response = await axios.get(url);
-    const $ = cheerio.load(response.data);
-    
-    // Récupérer le contenu pertinent
-    const content = {
-      title: $('title').text(),
-      description: $('meta[name="description"]').attr('content') || '',
-      mainContent: $('main').text().trim(),
-      // Ajoutez d'autres sélecteurs selon la structure du site
-      products: $('.product').map((_, el) => ({
-        name: $(el).find('.product-name').text(),
-        description: $(el).find('.product-description').text(),
-      })).get(),
-    };
+  const browser = await puppeteer.launch();
 
+  try {
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
+
+    const content = await page.evaluate(() => document.body.innerText);
+
+    await browser.close();
     return content;
   } catch (error) {
+    await browser.close();
     console.error('Erreur lors du scraping:', error);
     throw error;
   }
-} 
+}

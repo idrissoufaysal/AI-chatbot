@@ -6,10 +6,20 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { useTheme } from "next-themes"
+import { useEffect } from 'react'
+import { scrapWebsite } from './utils/scraper'
 
 export default function Home() {
   const { messages, input, handleInputChange, handleSubmit } = useChat()
   const { theme, setTheme } = useTheme()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const info = await scrapWebsite('https://kofcorporation.com/')
+      console.log(info);
+    }
+    fetchData()
+  }, [])
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4">

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Message } from "ai/react";
-
 
 const apiKey = process.env.GEMINI_API_KEY;
 
@@ -16,13 +14,13 @@ export const runtime = "edge";
 export const POST = async (req: Request) => {
   try {
     const { messages } = await req.json();
-    console.log(messages);
+    console.log("les messages recu ",messages);
     
     // Ajoutez le contexte pour Mark Zuckerberg
     const context = `
       Tu es Mark Zuckerberg, le fondateur de Facebook (maintenant Meta).
       Tu es passionné par la technologie, la connectivité mondiale et l'innovation.
-      Réponds aux questions comme si tu étais Mark Zuckerberg en personnes.
+      Réponds aux questions comme si tu étais Mark Zuckerberg en personnes. la reponse doit etre courte
     `;
 
     // Concaténez les messages pour former un prompt

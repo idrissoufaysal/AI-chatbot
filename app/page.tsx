@@ -7,29 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useState } from "react";
 
 export default function Chatbot() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
+  const { messages, input, handleInputChange, handleSubmit, error, isLoading } = useChat({
+    api: "/api/chat2",
   });
-  const [msg, setMsg] = useState([])
-  const [inputValue, setInputValue] = useState("");
 
-  console.log("Messages après mise à jour :", messages);
+  console.log("Messages envoyer (client) :", messages);
 
-  const handleAdd = async (e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-   
-    const response = await fetch("/api/chat", { 
-      body: JSON.stringify(inputValue), 
-      method: "POST" 
-    })
-    const data = await response.json()
-    console.log(data);
-    setInputValue("")
-    setMsg(data)
-  }
+
+  // Add error display
 
 
   return (
@@ -70,11 +57,16 @@ export default function Chatbot() {
               </div>
             </div>
           )}
+          {error && (
+            <div className="text-red-500">
+              Error: {error.message}
+            </div>
+          )}
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <form onSubmit={handleAdd} className="flex w-full gap-2">
-          <Input placeholder="Ask Gemini something..." value={inputValue} onChange={(e)=>setInputValue(e.target.value)} />
+        <form onSubmit={handleSubmit} className="flex w-full gap-2">
+          <Input placeholder="Ask Gemini something..." value={input} onChange={handleInputChange} />
           <Button type="submit" size="icon" disabled={isLoading}>
             <Send className="h-4 w-4" />
             <span className="sr-only">Send</span>

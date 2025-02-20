@@ -11,13 +11,18 @@ const model = genAI.getGenerativeModel({
 
 export const runtime = "edge";
 
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
 export const POST = async (req: NextRequest) => {
   try {
     const { messages } = await req.json();
     console.log("les messages recu ",messages);
     
       // Créer l'historique des conversations pour Gemini
-      const chatHistory = messages.slice(0, -1).map((msg: any) => ({
+      const chatHistory = messages.slice(0, -1).map((msg: Message) => ({
         role: msg.role === "user" ? "user" : "model",
         parts: [{ text: msg.content }],
       }));

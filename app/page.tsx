@@ -1,6 +1,4 @@
 "use client";
-
-import { useChat } from "ai/react";
 import { Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -88,16 +86,21 @@ export default function Chatbot() {
     <div className="flex justify-center items-center">
       <Card className="w-[640px] h-[98vh] grid grid-rows-[auto_1fr_auto]">
         <CardHeader>
-          <CardTitle>Mark zukerberg Chatbot</CardTitle>
+          <CardTitle className="self-center" >Mark zukerberg Chatbot</CardTitle>
         </CardHeader>
         <ScrollArea className="h-full px-3">
-          <CardContent className="space-y-1">
+          <CardContent className="space-y-3">
             {messages.map((message, index) => (
               <>
                 <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className="flex w-full">
-
-                    <div className={`rounded-lg px-4 py-2 max-w-[80%] ${message.role === 'user' ? ' text-white' : 'text-green-400'
+                  <div className="flex w-full items-start">
+                    <div>
+                      <Avatar>
+                        <AvatarImage src={message.role == 'user' ? '/images/user.png' : '/images/mark2.jpg'} alt="@shadcn" />
+                        <AvatarFallback>{message.role === 'user' ? 'U' : 'A'}</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className={`rounded-lg px-4 py-2 max-w-[80%] ${message.role === 'user' ? ' text-white' : 'text-blue-400'
                       }`}>
                       {message.content}
                     </div>
@@ -106,6 +109,21 @@ export default function Chatbot() {
                 <hr className="border w-full border-dark-4/80" />
               </>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="flex w-full">
+                  <div>
+                    <Avatar>
+                      <AvatarImage src="/images/mark2.jpg" alt="@shadcn" />
+                      <AvatarFallback>A</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="flex items-center space-x-2 rounded-lg px-4 py-2 max-w-[80%] text-white">
+                    <span>Mark réfléchit...</span>
+                  </div>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
             {error && <p className="text-red-500">{error}</p>}
           </CardContent>

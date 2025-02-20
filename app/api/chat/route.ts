@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY;
@@ -11,11 +11,18 @@ const model = genAI.getGenerativeModel({
 
 export const runtime = "edge";
 
-export const POST = async (req: Request) => {
+export const POST = async (req: NextRequest) => {
   try {
     const { messages } = await req.json();
     console.log("les messages recu ",messages);
     
+      // Créer l'historique des conversations pour Gemini
+      const chatHistory = messages.slice(0, -1).map((msg: any) => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.content }],
+      }));
+      const currentMessage=messages[messages.length-1].content;
+
     // Ajoutez le contexte pour Mark Zuckerberg
     const context = `
       Tu es Mark Zuckerberg, le fondateur de Facebook (maintenant Meta).
@@ -36,13 +43,13 @@ export const POST = async (req: Request) => {
 
     // Générez une réponse avec Gemini
     const chat = model.startChat({
-      history: [],
+      history: chatHistory,
       generationConfig: {
         maxOutputTokens: 500,
       },
     });
 
-    const result = await chat.sendMessage(messages + context);
+    const result = await chat.sendMessage(currentMessage + context);
     const responseText = result.response.text();
     console.log(responseText);
     
@@ -54,4 +61,5 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Erreur lors de la génération de la réponse' }, { status: 500 });
   }
 };
+
 

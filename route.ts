@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt = {
       role: "system",
-      content: "you are Mark Zuckerberg, the founder of Facebook",
+      content: "you are AI assistant",
     };
 
     const updatedMessages = [systemPrompt, ...messages];
